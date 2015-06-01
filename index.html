@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DEV</title>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<button id="back">back</button>
+				<button id="prev">prev</button>
+				<textarea class="form-control" rows="10" id="editor">
+block mainRow
+	row
+		col-md-6
+		col-md-6
+
+page-header 
+	mainRow
+page-content row
+	col-md-6
+		mainRow
+	col-md-6
+		sections
+page-footer
+	mainRow
+
+block sections
+	row
+		col-md-4 col-sm-6
+		col-md-4 col-sm-6
+		col-md-4 col-sm-6
+				</textarea>
+				<br>
+				<div class="container" id="showcase"></div>
+				<br>
+				<pre id="code"></pre>
+			</div>
+		</div>
+	</div>
+
+	
+
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
