@@ -1,6 +1,73 @@
 var app = {};
 
+
+app.History = function(options){
+
+	if (!(this instanceof app.History)) {
+		return new app.History(options);
+	}
+
+	var instance = this;
+
+	instance.editor = options.editor;
+	instance.historyState = 0;
+	instance.history = [];
+
+	document.getElementById('back').addEventListener('click', instance.back.bind(instance));
+	document.getElementById('prev').addEventListener('click', instance.prev.bind(instance));
+
+	instance.editor.textarea.addEventListener('keyup', instance.keyUpHandler.bind(instance));
+
+};
+
+app.History.prototype = {
+	back: function(){
+
+		var instance = this,
+			editor = instance.editor;
+
+		instance.historyState --;
+		if(instance.history[instance.historyState]){
+			editor.textarea.value = instance.history[instance.historyState];
+			editor.generate();
+		}else{
+			instance.historyState ++;
+		}
+
+	},
+
+	prev: function(){
+
+		var instance = this,
+			editor = instance.editor;
+
+		instance.historyState ++;
+
+		if(instance.history[instance.historyState]){
+			editor.textarea.value = instance.history[instance.historyState];
+			editor.generate();
+		}else{
+			instance.historyState --;
+		}
+	},
+
+	keyUpHandler: function(e){
+		var instance = this,
+			key = e.keyCode;
+
+		instance.editor.generate();
+
+		if(key === 9 || key === 13 || key === 32){
+			instance.history.length = instance.historyState;
+			instance.history.push(instance.editor.textarea.value);
+			instance.historyState ++;
+		}
+
+	}
+};
+
 app.Editor = function(options){
+	
 	if (!(this instanceof app.Editor)) {
 		return new app.Editor(options);
 	}
@@ -17,47 +84,12 @@ app.Editor = function(options){
 	
 
 	instance.textarea.addEventListener('keydown', instance.keyDownHandler.bind(instance));
-	instance.textarea.addEventListener('keyup', instance.keyUpHandler.bind(instance));
 
-	document.getElementById('back').addEventListener('click', instance.historyBack.bind(instance));
-	document.getElementById('prev').addEventListener('click', instance.historyPrev.bind(instance));
-	
 	instance.generate();
 };
 
 
 app.Editor.prototype = {
-
-	historyBack: function(){
-		console.log('back');
-		var instance = this;
-
-		instance.historyState --;
-		if(instance.history[instance.historyState]){
-			instance.textarea.value = instance.history[instance.historyState];
-			instance.generate();
-		}else{
-			instance.historyState ++;
-		}
-		console.log(instance.historyState);
-
-	},
-
-	historyPrev: function(){
-		console.log('prev');
-
-		var instance = this;
-		instance.historyState ++;
-
-		if(instance.history[instance.historyState]){
-			instance.textarea.value = instance.history[instance.historyState];
-			instance.generate();
-		}else{
-			instance.historyState --;
-		}
-
-		console.log(instance.historyState);
-	},
 
 	generate: function(){
 		var instance = this;
@@ -70,6 +102,7 @@ app.Editor.prototype = {
 		instance.code.innerHTML = html.replace(/</g, '&lt;' );
 		instance.showcase.innerHTML = html; 
 	},
+
 	render: function(tree){
 		var html = "";
 
@@ -220,21 +253,6 @@ app.Editor.prototype = {
             
             textarea.selectionStart = textarea.selectionEnd = selectionStart + 1;
 		}
-		
-	},
-
-	keyUpHandler: function(e){
-		var instance = this,
-			key = e.keyCode;
-
-		instance.generate();
-
-		if(key === 9 || key === 13 || key === 32){
-			instance.history.length = instance.historyState;
-			instance.history.push(instance.textarea.value);
-			instance.historyState ++;
-		}
-
 	}
 };
 
@@ -243,3 +261,5 @@ editor = new app.Editor({
 	showCaseId: 'showcase',
 	codeId: 'code'
 });
+
+history = new app.History({editor: editor});
